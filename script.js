@@ -1,16 +1,20 @@
 'use strict';
 
+//local active status
 const updateactive = () => {
   player1.active = !player1.active;
   player2.active = !player2.active;
 };
 
-const changedice = rolled => (dice.src = `dice-${rolled}.png`);
+//dice image changer
+const changedice = rolled => (dice.src = `dices/dice-${rolled}.png`);
 
+//score updater
 const updatescore = (which, type, score) => {
   document.querySelector(`#${type}--${which}`).textContent = score;
 };
 
+//when player rolls 1
 const rolled1 = () => {
   if (player1.active) {
     console.log(`player 1 rolled: 0`);
@@ -25,8 +29,10 @@ const rolled1 = () => {
   }
 };
 
+//dice logic
 const randomNumber = () => Math.floor(Math.random() * 6 + 1);
 
+//objects
 const players = document.querySelectorAll('.player');
 const dice = document.querySelector('.dice');
 const currentscore = document.querySelectorAll('.score');
@@ -34,6 +40,7 @@ const hold = document.querySelector('.btn--hold');
 const rolldice = document.querySelector('.btn--roll');
 const newgame = document.querySelector('.btn--new');
 
+//player 1 object
 let player1 = {
   currentscore: 0,
   totalscore: 0,
@@ -45,6 +52,7 @@ let player1 = {
   },
 };
 
+//player 2 object
 let player2 = {
   currentscore: 0,
   totalscore: 0,
@@ -56,8 +64,10 @@ let player2 = {
   },
 };
 
+//making player 1 the first active player
 player1.makeactive();
 
+//rolling dice
 rolldice.addEventListener('click', () => {
   const rolled = randomNumber();
   if (player1.active) {
@@ -66,17 +76,24 @@ rolldice.addEventListener('click', () => {
       console.log(`player 1 rolled: ${rolled}`);
       changedice(rolled);
       updatescore(0, 'current', player1.currentscore);
-    } else rolled1();
+    } else {
+      changedice(1);
+      rolled1();
+    }
   } else {
     if (rolled !== 1) {
       player2.currentscore += rolled;
       console.log(`player 2 rolled: ${rolled}`);
       changedice(rolled);
       updatescore(1, 'current', player2.currentscore);
-    } else rolled1();
+    } else {
+      changedice(1);
+      rolled1();
+    }
   }
 });
 
+//holding score
 hold.addEventListener('click', () => {
   if (player1.active) {
     player1.totalscore += player1.currentscore;
@@ -93,6 +110,7 @@ hold.addEventListener('click', () => {
   }
 });
 
+//new game
 newgame.addEventListener('click', () => {
   player1.makeactive();
   player1.totalscore = 0;
