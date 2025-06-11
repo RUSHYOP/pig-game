@@ -7,48 +7,48 @@
 }
 
 html {
-  font-size: 62.5%;
+  font-size: 62.5%; /* 1rem = 10px */
 }
 
 body {
   font-family: 'Nunito', sans-serif;
   font-weight: 400;
-  height: 100vh;
+  min-height: 100vh;
   color: #333;
   background-image: linear-gradient(to top left, #6a00b3 0%, #ff1e4b 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 1.5rem;
+  overflow-y: auto;
 }
 
 main {
   position: relative;
   width: 100%;
-  max-width: 100rem;
-  min-height: 60rem;
+  max-width: 42rem;
   background-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(20px);
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
   border-radius: 1rem;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  padding: 2rem;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 1.5rem;
   gap: 2rem;
 }
 
 .player {
-  flex: 1 1 48%;
-  padding: 4rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2rem;
+  border-radius: 1rem;
+  text-align: center;
   transition: all 0.75s ease;
 }
 
 .name {
-  font-size: 4rem;
+  font-size: 2.8rem;
   text-transform: uppercase;
   font-weight: 300;
   margin-bottom: 1rem;
@@ -57,15 +57,15 @@ main {
 }
 
 .score {
-  font-size: 8rem;
+  font-size: 5rem;
   font-weight: 300;
   color: #c7365f;
-  margin-bottom: auto;
+  margin-bottom: 1rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .player--active {
-  background-color: rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.4);
 }
 .player--active .name {
   font-weight: 700;
@@ -75,76 +75,70 @@ main {
   font-weight: 500;
   color: #d12e5b;
 }
-.player--active .current {
-  opacity: 1;
-}
 
 .current {
   background-color: #c7365f;
   opacity: 0.85;
   border-radius: 9px;
   color: #fff;
-  width: 65%;
-  padding: 2rem;
-  text-align: center;
+  width: 100%;
+  padding: 1.5rem;
   transition: all 0.75s ease;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
 }
 
 .current-label {
   text-transform: uppercase;
-  margin-bottom: 1rem;
-  font-size: 1.7rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
   color: #eee;
 }
 
 .current-score {
-  font-size: 3.5rem;
+  font-size: 2.8rem;
   font-weight: 600;
+}
+
+.controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  margin-top: 2rem;
 }
 
 .btn {
   color: #222;
-  background: rgba(255, 255, 255, 0.75);
+  background: rgba(255, 255, 255, 0.85);
   border: none;
   font-family: inherit;
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   text-transform: uppercase;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.2s;
-  padding: 0.9rem 2.5rem;
+  padding: 1rem 2rem;
   border-radius: 50rem;
-  box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.1);
-  margin: 0.5rem auto;
-  display: block;
-  width: fit-content;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
+  width: 100%;
+  text-align: center;
 }
 
 .btn:hover {
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: rgba(255, 255, 255, 1);
   transform: scale(1.03);
 }
 
 .btn:active {
   transform: scale(0.98);
-  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
-}
-
-.btn:focus {
-  outline: none;
-}
-
-.btn::first-letter {
-  font-size: 2.4rem;
-  margin-right: 0.7rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.2);
 }
 
 .dice {
   display: block;
-  margin: 2rem auto;
-  height: 10rem;
-  box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.25);
+  margin: 1.5rem auto;
+  height: 8rem;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.25);
   transition: transform 0.3s ease;
 }
 
@@ -160,17 +154,22 @@ main {
   color: #c7365f;
 }
 
-.modal {
+.modal,
+.game-over {
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 70%;
+  width: 90%;
+  max-width: 40rem;
   background-color: white;
-  padding: 6rem;
-  border-radius: 5px;
+  padding: 3rem 2rem;
+  border-radius: 1rem;
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
   z-index: 10;
+  text-align: center;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 .overlay {
@@ -184,19 +183,26 @@ main {
   z-index: 5;
 }
 
-.close-modal {
+.close-modal,
+.close-gameover {
   position: absolute;
-  top: 1.2rem;
-  right: 2rem;
-  font-size: 5rem;
+  top: 1rem;
+  right: 1.5rem;
+  font-size: 3rem;
   color: #333;
   cursor: pointer;
   border: none;
   background: none;
 }
 
+.winner-text {
+  font-size: 2.2rem;
+  color: #c7365f;
+  margin-top: 1.5rem;
+}
+
 p {
-  font-size: 1.8rem;
+  font-size: 1.6rem;
   line-height: 1.5;
 }
 
@@ -204,141 +210,20 @@ p {
   display: none;
 }
 
-.game-over {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 70%;
-  background-color: white;
-  padding: 5rem;
-  border-radius: 10px;
-  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
-  z-index: 15;
-  text-align: center;
-}
-
-.winner-text {
-  font-size: 2.4rem;
-  margin-top: 2rem;
-  color: #c7365f;
-}
-
-.close-gameover {
-  position: absolute;
-  top: 1.2rem;
-  right: 2rem;
-  font-size: 4rem;
-  color: #333;
-  cursor: pointer;
-  border: none;
-  background: none;
-}
-
-@media (max-width: 768px) {
-  html {
-    font-size: 55%; /* Slightly smaller base font */
-  }
-
-  body {
-    flex-direction: column;
-    padding: 1.5rem;
-    justify-content: flex-start;
-  }
-
+/* Responsive for tablets and up */
+@media (min-width: 600px) {
   main {
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    padding: 2rem 1rem;
+    max-width: 70rem;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 2.5rem;
     gap: 2rem;
   }
 
   .player {
-    width: 100%;
-    padding: 2rem 1rem;
-    text-align: center;
-    border-radius: 1rem;
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .name {
-    font-size: 2.8rem;
-  }
-
-  .score {
-    font-size: 5rem;
-  }
-
-  .current {
-    width: 90%;
-    padding: 1.5rem;
-  }
-
-  .current-label {
-    font-size: 1.5rem;
-  }
-
-  .current-score {
-    font-size: 3rem;
-  }
-
-  .btn {
-    font-size: 1.6rem;
-    padding: 1rem 2rem;
-    margin: 1rem auto;
-    width: 80%;
-  }
-
-  .btn::first-letter {
-    font-size: 1.6rem; /* Remove this if you're getting spacing bugs */
-    margin-right: 0.4rem;
-  }
-
-  .dice {
-    height: 9rem;
-    margin: 2rem auto;
-  }
-
-  .modal,
-  .game-over {
-    width: 90%;
+    flex: 1 1 45%;
     padding: 3rem 2rem;
-    font-size: 1.6rem;
-  }
-
-  .winner-text {
-    font-size: 2rem;
-  }
-
-  .close-modal,
-  .close-gameover {
-    font-size: 3.5rem;
-    top: 0.5rem;
-    right: 1.5rem;
-  }
-
-  #chance-input {
-    width: 80%;
-    padding: 0.8rem;
-    font-size: 1.6rem;
-    margin-bottom: 1rem;
-    border-radius: 0.5rem;
-    border: none;
-    outline: none;
-    text-align: center;
-  }
-}
-@media (max-width: 768px) {
-  main {
-    width: 95%;
-    flex-direction: column;
-    align-items: center;
-    padding: 1rem;
-  }
-
-  .player {
-    padding: 2rem 1rem;
   }
 
   .name {
@@ -350,8 +235,7 @@ p {
   }
 
   .current {
-    width: 90%;
-    padding: 1.5rem;
+    padding: 2rem;
   }
 
   .current-score {
@@ -359,20 +243,29 @@ p {
   }
 
   .btn {
-    font-size: 1.6rem;
-    padding: 0.6rem 2rem;
+    font-size: 1.8rem;
+    width: fit-content;
+    margin: 0 auto;
+  }
+
+  .controls {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
   }
 
   .dice {
-    height: 8rem;
+    height: 10rem;
   }
 
-  .modal {
-    width: 90%;
-    padding: 4rem 2rem;
+  .modal,
+  .game-over {
+    width: 70%;
   }
 
-  .close-modal {
+  .close-modal,
+  .close-gameover {
     font-size: 4rem;
   }
 }
