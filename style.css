@@ -329,7 +329,7 @@ p {
     text-align: center;
   }
 }
-dia (max-width: 768px) {
+@media (max-width: 768px) {
   main {
     width: 95%;
     flex-direction: column;
