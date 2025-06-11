@@ -1,6 +1,6 @@
 'use strict';
 
-//objects
+// DOM elements
 const players = document.querySelectorAll('.player');
 const dice = document.querySelector('.dice');
 const hold = document.querySelector('.btn--hold');
@@ -17,15 +17,12 @@ const endgame = document.querySelectorAll('.btn--end');
 const setChancesBtn = document.querySelector('.btn--setchances');
 const chanceInput = document.getElementById('chance-input');
 
-let customChances = 3; // Default if user doesn’t set
+// Default chances
+let customChances = 3;
+let dicePool = [];
+let rollLocked = false;
 
-//update chances
-const updatechances = (which, custom) => {
-  document.getElementById(
-    `chances--${which}`
-  ).textContent = `Chances Left: ${custom}`;
-};
-//player class
+// Player class
 class Player {
   constructor(active) {
     this.currentscore = 0;
@@ -35,160 +32,156 @@ class Player {
   }
 }
 
-// show/hide game over
-const toggleGameOver = (show, winner = '') => {
-  gameOverModal.classList.toggle('hidden', !show);
-  overlay.classList.toggle('hidden', !show);
-  winnerText.textContent = `${winner} Wins!`;
+// Initialize players
+let player0 = new Player(true);
+let player1 = new Player(false);
+
+// Utility functions
+const updateChances = (which, value) => {
+  document.getElementById(
+    `chances--${which}`
+  ).textContent = `Chances Left: ${value}`;
 };
 
-//local active status
-const updateactive = () => {
+const updateScore = (which, type, value) => {
+  document.querySelector(`#${type}--${which}`).textContent = value;
+  console.log(`Player ${which} ${type}: ${value}`);
+};
+
+const updateActive = () => {
   player0.active = !player0.active;
   player1.active = !player1.active;
   players[0].classList.toggle('player--active', player0.active);
   players[1].classList.toggle('player--active', player1.active);
 };
 
-//instructions toggle
-const toggle = show => {
+const changeDice = rolled => (dice.src = `dices/dice-${rolled}.png`);
+
+const shuffleDice = () => {
+  dicePool = [1, 2, 3, 4, 5, 6];
+  for (let i = dicePool.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [dicePool[i], dicePool[j]] = [dicePool[j], dicePool[i]];
+  }
+};
+
+const randomNumber = () => {
+  if (dicePool.length === 0) shuffleDice();
+  return dicePool.pop();
+};
+
+const toggleModal = show => {
   modal.classList.toggle('hidden', !show);
   overlay.classList.toggle('hidden', !show);
 };
 
-//dice image changer
-const changedice = rolled => (dice.src = `dices/dice-${rolled}.png`);
+const toggleGameOver = (show, winner = '') => {
+  gameOverModal.classList.toggle('hidden', !show);
+  overlay.classList.toggle('hidden', !show);
+  winnerText.textContent = `${winner} Wins!`;
+};
 
-//new game
-const gamereset = () => {
+const gameReset = () => {
   player0 = new Player(true);
   player1 = new Player(false);
   player0.lefttolose = customChances;
   player1.lefttolose = customChances;
-  updatescore(0, 'current', player0.currentscore);
-  updatescore(0, 'score', player0.totalscore);
-  updatescore(1, 'score', player1.totalscore);
-  updatescore(1, 'current', player1.currentscore);
-  updatechances(0, customChances);
-  updatechances(1, customChances);
+  updateScore(0, 'current', player0.currentscore);
+  updateScore(0, 'score', player0.totalscore);
+  updateScore(1, 'score', player1.totalscore);
+  updateScore(1, 'current', player1.currentscore);
+  updateChances(0, customChances);
+  updateChances(1, customChances);
 };
 
-//score updater
-const updatescore = (which, type, score) => {
-  document.querySelector(`#${type}--${which}`).textContent = score;
-  console.log(`Player ${which} ${type}: ${score}`);
-};
+const handleRolledOne = () => {
+  const currentPlayer = player0.active ? player0 : player1;
+  const index = player0.active ? 0 : 1;
+  currentPlayer.currentscore = 0;
+  currentPlayer.lefttolose--;
 
-//when player rolls 1
-const rolled1 = () => {
-  if (player0.active) {
-    player0.currentscore = 0;
-    player0.lefttolose--;
-    updatescore(0, 'current', player0.currentscore);
-    updatechances(0, player0.lefttolose);
-    if (player0.lefttolose === 0) {
-      toggleGameOver(true, 'Player 2');
-      return;
-    }
-    updateactive();
-  } else {
-    player1.currentscore = 0;
-    player1.lefttolose--;
-    updatescore(1, 'current', player1.currentscore);
-    updatechances(1, player1.lefttolose);
-    if (player1.lefttolose === 0) {
-      toggleGameOver(true, 'Player 1');
-      return;
-    }
-    updateactive();
+  updateScore(index, 'current', 0);
+  updateChances(index, currentPlayer.lefttolose);
+
+  if (currentPlayer.lefttolose === 0) {
+    toggleGameOver(true, player0.active ? 'Player 2' : 'Player 1');
+    return;
   }
+
+  updateActive();
 };
 
-//winner
-const winnr = () => {
+const decideWinner = () => {
   let winner;
   if (player0.totalscore > player1.totalscore) winner = 'Player 1';
   else if (player1.totalscore > player0.totalscore) winner = 'Player 2';
   else winner = "No one. It's a tie!";
+
   toggleGameOver(true, winner);
 };
-//dice logic
-const randomNumber = () => Math.floor(Math.random() * 6 + 1);
 
-//player objects
-let player0 = new Player(true);
-let player1 = new Player(false);
-
-//rolling dice
+// Event listeners
 rolldice.addEventListener('click', () => {
+  if (rollLocked) return;
+
+  rollLocked = true;
+  rolldice.disabled = true;
+
   const rolled = randomNumber();
+  const currentPlayer = player0.active ? player0 : player1;
+  const index = player0.active ? 0 : 1;
+
   // Animate dice
   dice.classList.add('roll');
-  setTimeout(() => dice.classList.remove('roll'), 300);
+  changeDice(rolled);
 
-  if (player0.active) {
+  setTimeout(() => {
+    dice.classList.remove('roll');
     if (rolled !== 1) {
-      player0.currentscore += rolled;
-      changedice(rolled);
-      updatescore(0, 'current', player0.currentscore);
+      currentPlayer.currentscore += rolled;
+      updateScore(index, 'current', currentPlayer.currentscore);
     } else {
-      changedice(1);
-      rolled1();
+      changeDice(1);
+      handleRolledOne();
     }
-  } else {
-    if (rolled !== 1) {
-      player1.currentscore += rolled;
-      changedice(rolled);
-      updatescore(1, 'current', player1.currentscore);
-    } else {
-      changedice(1);
-      rolled1();
-    }
-  }
+
+    rollLocked = false;
+    rolldice.disabled = false;
+  }, 350);
 });
 
-//holding score
 hold.addEventListener('click', () => {
-  if (player0.active) {
-    player0.totalscore += player0.currentscore;
-    player0.currentscore = 0;
-    updatescore(0, 'score', player0.totalscore);
-    updatescore(0, 'current', 0);
-    updateactive();
-  } else {
-    player1.totalscore += player1.currentscore;
-    player1.currentscore = 0;
-    updatescore(1, 'score', player1.totalscore);
-    updatescore(1, 'current', 0);
-    updateactive();
-  }
+  const currentPlayer = player0.active ? player0 : player1;
+  const index = player0.active ? 0 : 1;
+
+  currentPlayer.totalscore += currentPlayer.currentscore;
+  currentPlayer.currentscore = 0;
+
+  updateScore(index, 'score', currentPlayer.totalscore);
+  updateScore(index, 'current', 0);
+  updateActive();
 });
 
-//new game
-newgame.addEventListener('click', gamereset);
+newgame.addEventListener('click', gameReset);
+endgame.forEach(btn => btn.addEventListener('click', decideWinner));
 
-//end game
-endgame.forEach(btn => btn.addEventListener('click', winnr));
-
-//close game button
 closeGameOverBtn.addEventListener('click', () => {
   toggleGameOver(false);
-  gamereset();
+  gameReset();
 });
 
-//instructions button
-instructions.addEventListener('click', () => toggle(true));
-closemodalbutton.addEventListener('click', () => toggle(false));
+instructions.addEventListener('click', () => toggleModal(true));
+closemodalbutton.addEventListener('click', () => toggleModal(false));
 
-//custom chances
 setChancesBtn.addEventListener('click', () => {
   const value = parseInt(chanceInput.value);
+
   if (!isNaN(value) && value > 0 && value <= 10) {
     customChances = value;
-    gamereset(); // Restart game with new chance count
+    gameReset();
     alert(`Chances to lose set to ${customChances}`);
-    updatechances(0, customChances);
-    updatechances(1, customChances);
+    updateChances(0, customChances);
+    updateChances(1, customChances);
   } else {
     alert('Enter a number between 1 and 10');
   }

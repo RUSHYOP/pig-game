@@ -206,6 +206,11 @@ p {
   line-height: 1.5;
 }
 
+.btn--roll:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .hidden {
   display: none;
 }
@@ -267,5 +272,26 @@ p {
   .close-modal,
   .close-gameover {
     font-size: 4rem;
+  }
+}
+
+/* Additional responsive tweaks for smaller screens */
+@media (max-width: 480px) {
+  .btn {
+    font-size: 1.4rem;
+    padding: 1rem;
+  }
+  .dice {
+    height: 6rem;
+  }
+  .current-score {
+    font-size: 2.4rem;
+  }
+  .winner-text {
+    font-size: 1.8rem;
+  }
+  .modal,
+  .game-over {
+    padding: 2rem 1.5rem;
   }
 }
