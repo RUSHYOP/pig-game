@@ -3,12 +3,11 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing: inherit;
+  box-sizing: border-box;
 }
 
 html {
   font-size: 62.5%;
-  box-sizing: border-box;
 }
 
 body {
@@ -23,38 +22,38 @@ body {
   padding: 2rem;
 }
 
-/* LAYOUT */
 main {
   position: relative;
-  width: 100rem;
-  height: 60rem;
+  width: 100%;
+  max-width: 100rem;
+  min-height: 60rem;
   background-color: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(20px);
   box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
   border-radius: 1rem;
-  overflow: hidden;
   display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 2rem;
 }
 
 .player {
-  flex: 50%;
-  padding: 9rem;
+  flex: 1 1 48%;
+  padding: 4rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   transition: all 0.75s ease;
 }
 
-/* ELEMENTS */
 .name {
-  position: relative;
   font-size: 4rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  word-spacing: 2px;
   font-weight: 300;
   margin-bottom: 1rem;
   color: #222;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.15);
 }
 
 .score {
@@ -62,6 +61,7 @@ main {
   font-weight: 300;
   color: #c7365f;
   margin-bottom: auto;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .player--active {
@@ -75,7 +75,6 @@ main {
   font-weight: 500;
   color: #d12e5b;
 }
-
 .player--active .current {
   opacity: 1;
 }
@@ -89,6 +88,7 @@ main {
   padding: 2rem;
   text-align: center;
   transition: all 0.75s ease;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.1);
 }
 
 .current-label {
@@ -100,13 +100,10 @@ main {
 
 .current-score {
   font-size: 3.5rem;
+  font-weight: 600;
 }
 
-/* ABSOLUTE POSITIONED ELEMENTS */
 .btn {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   color: #222;
   background: rgba(255, 255, 255, 0.75);
   border: none;
@@ -119,15 +116,18 @@ main {
   padding: 0.9rem 2.5rem;
   border-radius: 50rem;
   box-shadow: 0 1.75rem 3.5rem rgba(0, 0, 0, 0.1);
+  margin: 0.5rem auto;
+  display: block;
+  width: fit-content;
 }
 
 .btn:hover {
   background-color: rgba(255, 255, 255, 0.9);
-  transform: translateX(-50%) scale(1.03);
+  transform: scale(1.03);
 }
 
 .btn:active {
-  transform: translate(-50%, 3px);
+  transform: scale(0.98);
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
 }
 
@@ -137,31 +137,19 @@ main {
 
 .btn::first-letter {
   font-size: 2.4rem;
-  display: inline-block;
   margin-right: 0.7rem;
 }
 
-.btn--new {
-  top: 4rem;
-}
-.btn--roll {
-  top: 39.3rem;
-}
-.btn--hold {
-  top: 46.1rem;
-}
-.btn--instructions {
-  top: 52.8rem;
-}
-
 .dice {
-  position: absolute;
-  left: 50%;
-  top: 16.5rem;
-  transform: translateX(-50%);
+  display: block;
+  margin: 2rem auto;
   height: 10rem;
   box-shadow: 0 2rem 5rem rgba(0, 0, 0, 0.25);
   transition: transform 0.3s ease;
+}
+
+.dice.roll {
+  transform: rotate(10deg) scale(1.1);
 }
 
 .player--winner {
@@ -172,19 +160,91 @@ main {
   color: #c7365f;
 }
 
-/* ============================= */
-/* 📱 MOBILE RESPONSIVE STYLES  */
-/* ============================= */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  background-color: white;
+  padding: 6rem;
+  border-radius: 5px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 10;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(3px);
+  z-index: 5;
+}
+
+.close-modal {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 5rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+p {
+  font-size: 1.8rem;
+  line-height: 1.5;
+}
+
+.hidden {
+  display: none;
+}
+
+.game-over {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 70%;
+  background-color: white;
+  padding: 5rem;
+  border-radius: 10px;
+  box-shadow: 0 3rem 5rem rgba(0, 0, 0, 0.3);
+  z-index: 15;
+  text-align: center;
+}
+
+.winner-text {
+  font-size: 2.4rem;
+  margin-top: 2rem;
+  color: #c7365f;
+}
+
+.close-gameover {
+  position: absolute;
+  top: 1.2rem;
+  right: 2rem;
+  font-size: 4rem;
+  color: #333;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
 @media (max-width: 768px) {
   main {
     width: 95%;
-    height: auto;
     flex-direction: column;
-    padding: 2rem 0;
+    align-items: center;
+    padding: 1rem;
   }
 
   .player {
-    padding: 4rem 2rem;
+    padding: 2rem 1rem;
   }
 
   .name {
@@ -207,25 +267,18 @@ main {
   .btn {
     font-size: 1.6rem;
     padding: 0.6rem 2rem;
-    position: relative;
-    transform: none;
-    margin: 1rem auto;
-    left: auto;
-  }
-
-  .btn--new,
-  .btn--roll,
-  .btn--hold,
-  .btn--instructions {
-    top: auto;
   }
 
   .dice {
-    position: relative;
-    left: auto;
-    top: auto;
-    transform: none;
-    margin: 2rem auto;
     height: 8rem;
+  }
+
+  .modal {
+    width: 90%;
+    padding: 4rem 2rem;
+  }
+
+  .close-modal {
+    font-size: 4rem;
   }
 }
