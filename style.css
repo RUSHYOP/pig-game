@@ -236,6 +236,100 @@ p {
 }
 
 @media (max-width: 768px) {
+  html {
+    font-size: 55%; /* Slightly smaller base font */
+  }
+
+  body {
+    flex-direction: column;
+    padding: 1.5rem;
+    justify-content: flex-start;
+  }
+
+  main {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 1rem;
+    gap: 2rem;
+  }
+
+  .player {
+    width: 100%;
+    padding: 2rem 1rem;
+    text-align: center;
+    border-radius: 1rem;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .name {
+    font-size: 2.8rem;
+  }
+
+  .score {
+    font-size: 5rem;
+  }
+
+  .current {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .current-label {
+    font-size: 1.5rem;
+  }
+
+  .current-score {
+    font-size: 3rem;
+  }
+
+  .btn {
+    font-size: 1.6rem;
+    padding: 1rem 2rem;
+    margin: 1rem auto;
+    width: 80%;
+  }
+
+  .btn::first-letter {
+    font-size: 1.6rem; /* Remove this if you're getting spacing bugs */
+    margin-right: 0.4rem;
+  }
+
+  .dice {
+    height: 9rem;
+    margin: 2rem auto;
+  }
+
+  .modal,
+  .game-over {
+    width: 90%;
+    padding: 3rem 2rem;
+    font-size: 1.6rem;
+  }
+
+  .winner-text {
+    font-size: 2rem;
+  }
+
+  .close-modal,
+  .close-gameover {
+    font-size: 3.5rem;
+    top: 0.5rem;
+    right: 1.5rem;
+  }
+
+  #chance-input {
+    width: 80%;
+    padding: 0.8rem;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+    border-radius: 0.5rem;
+    border: none;
+    outline: none;
+    text-align: center;
+  }
+}
+dia (max-width: 768px) {
   main {
     width: 95%;
     flex-direction: column;
